@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Absence extends Model
 {
+
     protected $fillable = [
-        'user_id',
+    
         'description',
+        'hour',
+        'turn',
+        'user_id',
 
     ];
     public function department():BelongsTo{

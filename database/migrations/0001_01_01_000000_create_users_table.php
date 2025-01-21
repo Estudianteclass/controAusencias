@@ -24,10 +24,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('lastName');
             $table->integer('phone');
-            $table->string('dep_code');
+         
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->unsignedBigInteger('department_id');
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
         });
