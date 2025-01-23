@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('turn', ['mañana', 'tarde']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+        
         });
     }
 

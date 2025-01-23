@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Absence extends Model
 {
-
-    protected $fillable = [
+    public $timestamps=true;protected $fillable = [
     
         'description',
         'hour',

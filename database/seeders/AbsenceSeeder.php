@@ -18,7 +18,7 @@ class AbsenceSeeder extends Seeder
             'hour' => 'segunda',
             'turn' => 'tarde',
             'user_id' => '1',
-            'timestamps' => now()
+          
 
         ]);
         DB::table('absences')->insert([
@@ -26,7 +26,7 @@ class AbsenceSeeder extends Seeder
             'hour' => 'primera',
             'turn' => 'mañana',
             'user_id' => '2',
-            'timestamps' => now()
+           
 
         ]);
     }

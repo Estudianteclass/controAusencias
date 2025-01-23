@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             'name' => 'Miguel',
             'lastName' => 'Perez',
             'phone' => '123456',
-            'DPL' => 'DPL',
+            'department_id'=>'1',
             'email' => 'miguel@example.com',
             'password' => Hash::make('miguel123')
 
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
             'name' => 'Juan',
             'lastName' => 'Rodriguez',
             'phone' => '456688',
-            'DPL' => 'LND',
+            'department_id'=>'2',
             'email' => 'juan@example.com',
             'password' => Hash::make('juan123')
 

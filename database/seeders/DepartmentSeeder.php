@@ -15,14 +15,14 @@ class DepartmentSeeder extends Seeder
     {
         DB::table('departments')->insert([
           
-            'dep_name' => 'despliegue de aplicaciones'
+            'dep_name' => 'informatica'
 
 
         ]);
 
         DB::table('departments')->insert([
     
-            'dep_name' => 'lenguaje de marcas'
+            'dep_name' => 'matematicas'
 
 
         ]);
