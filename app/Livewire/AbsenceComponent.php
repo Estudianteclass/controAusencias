@@ -26,6 +26,11 @@ class AbsenceComponent extends Component
     }
     public function render()
     {
+
+      //  $this->absences = DB::table('absences')->get();
+ 
+      $this->absences = DB::table('absences')->join('users','absences.user_id','=','users.id')
+      ->join('departments','departments.id','=','users.department_id')->select('absences.*','users.*','departments.*')->get();
         return view('livewire.absence-component');
     }
     public function createAbsence()
@@ -97,13 +102,17 @@ class AbsenceComponent extends Component
         $absence->delete();
         $this->displayTeachersAbsences();
     }
+   /* public function getAbsences2()
+    {
+        $this->absences = DB::table('absences')->get();
+    }*/
     public function getAbsences()
     {
         $this->absences = DB::table('absences')->get();
     }
 }
 /*
-
+Absence::with('users');
  'description',
         'hour',
         'turn',

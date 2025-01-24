@@ -17,7 +17,7 @@ class AbsenceSeeder extends Seeder
             'description' => 'cita medica',
             'hour' => 'segunda',
             'turn' => 'tarde',
-            'user_id' => '1',
+            'user_id' => '2',
           
 
         ]);
@@ -25,7 +25,23 @@ class AbsenceSeeder extends Seeder
             'description' => 'renovacion dni',
             'hour' => 'primera',
             'turn' => 'mañana',
+            'user_id' => '3',
+           
+
+        ]);
+        DB::table('absences')->insert([
+            'description' => 'gestiones',
+            'hour' => 'tercera',
+            'turn' => 'tarde',
             'user_id' => '2',
+           
+
+        ]);
+        DB::table('absences')->insert([
+            'description' => 'convocatoria',
+            'hour' => 'cuarta',
+            'turn' => 'mañana',
+            'user_id' => '3',
            
 
         ]);

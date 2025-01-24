@@ -13,6 +13,15 @@ class DepartmentSeeder extends Seeder
      */
     public function run(): void
     {
+
+        DB::table('departments')->insert([
+          
+            'dep_name' => 'administracion'
+
+
+        ]);
+
+
         DB::table('departments')->insert([
           
             'dep_name' => 'informatica'
