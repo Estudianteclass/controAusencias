@@ -20,6 +20,10 @@ class AbsenceComponent extends Component
     public $absenceForm = false;
     public $absence_id;
     public $teacher_absences=[];
+    public $name;
+    public function mount(){
+        $this->absences=$this->getAbsences();
+    }
     public function render()
     {
         return view('livewire.absence-component');
@@ -41,6 +45,7 @@ class AbsenceComponent extends Component
 
 */
     }
+  
 
     public function updateAbsence()
     {
