@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Absence;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,7 @@ class AbsenceSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('absences')->insert([
+        Absence::create([
             'description' => 'cita medica',
             'hour' => 'segunda',
             'turn' => 'tarde',
@@ -21,7 +22,7 @@ class AbsenceSeeder extends Seeder
           
 
         ]);
-        DB::table('absences')->insert([
+        Absence::create([
             'description' => 'renovacion dni',
             'hour' => 'primera',
             'turn' => 'mañana',
@@ -29,7 +30,7 @@ class AbsenceSeeder extends Seeder
            
 
         ]);
-        DB::table('absences')->insert([
+        Absence::create([
             'description' => 'gestiones',
             'hour' => 'tercera',
             'turn' => 'tarde',
@@ -37,7 +38,7 @@ class AbsenceSeeder extends Seeder
            
 
         ]);
-        DB::table('absences')->insert([
+        Absence::create([
             'description' => 'convocatoria',
             'hour' => 'cuarta',
             'turn' => 'mañana',
