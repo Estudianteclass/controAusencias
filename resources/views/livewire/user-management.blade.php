@@ -1,3 +1,60 @@
 <div>
-    {{-- To attain knowledge, add things every day; To attain wisdom, subtract things every day. --}}
+    <div class="flex flex-col">
+        <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
+          <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+            <div class="overflow-hidden">
+              <table class="min-w-full">
+                <thead class="bg-white border-b">
+                  <tr>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                      Nombre
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                      Departamento
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        telefono
+                      </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                      Email
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                     Rol
+                   </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                      Acciones
+                    </th>
+                   
+                  </tr>
+                </thead>
+                <tbody>
+              
+                  <tr class="bg-gray-100 border-b hover:bg-gray-300">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    nombre
+                    </td>
+                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                    telefono usuario
+                    </td>
+                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                    departamento
+                    </td>
+                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  correo
+                  </td>
+                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                      rol usuario
+                    </td>
+                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                    <button class="bg-yellow-500 px-2 py-2 rounded-md text-white font-bold">Editar</button>
+                    <button class="bg-red-500 px-2 py-2 rounded-md text-white font-bold">Borrar</button>
+                  </td>
+                  </tr>
+              
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>

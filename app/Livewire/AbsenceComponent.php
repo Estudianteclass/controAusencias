@@ -14,6 +14,7 @@ class AbsenceComponent extends Component
     public $user;
     public $absence;
     public $description;
+    public $absenceDate;
     public $hour;
     public $turn;
     public $user_id;
@@ -21,6 +22,7 @@ class AbsenceComponent extends Component
     public $absence_id;
     public $teacher_absences=[];
     public $name;
+    
     public function mount(){
         $this->absences=$this->getAbsences();
     }
@@ -39,6 +41,7 @@ class AbsenceComponent extends Component
         $absence->description = $this->description;
         $absence->hour = $this->hour;
         $absence->turn = $this->turn;
+        $absence->absenceDate=$this->absenceDate;
         $absence->user_id = auth()->id();
         $absence->save();
         $this->getAbsences();
@@ -62,6 +65,7 @@ class AbsenceComponent extends Component
             'description' => $this->description,
             'hour' => $this->hour,
             'turn' => $this->turn,
+            'absenceDate'=>$this->absenceDate,
             'user_id' => $user,
         ]);
         $this->displayTeachersAbsences();

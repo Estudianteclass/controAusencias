@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->enum('hour', ['primera', 'segunda', 'tercera', 'recreo', 'cuarta', 'quinta', 'sexta']);
             $table->enum('turn', ['mañana', 'tarde']);
+            $table->date('absenceDate');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         

@@ -13,6 +13,7 @@ class Absence extends Model
         'hour',
         'turn',
         'user_id',
+        'absenceDate',
 
     ];
     public function department():BelongsTo{
