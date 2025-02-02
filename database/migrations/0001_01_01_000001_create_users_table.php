@@ -22,13 +22,12 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('lastName');
-            $table->integer('phone');
-         
+            $table->string('last_name');      
             $table->string('email')->unique();
+              $table->unsignedBigInteger('department_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->unsignedBigInteger('department_id');
+          
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();

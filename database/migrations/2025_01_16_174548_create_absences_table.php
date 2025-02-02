@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
+            $table->text('description');
             $table->unsignedBigInteger('user_id');
-            $table->enum('hour', ['primera', 'segunda', 'tercera', 'recreo', 'cuarta', 'quinta', 'sexta']);
-            $table->enum('turn', ['mañana', 'tarde']);
-            $table->date('absenceDate');
+            $table->string('hour');
+            $table->string('turn');
+            $table->date('absence_date');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         

@@ -7,16 +7,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Absence extends Model
 {
-    public $timestamps=true;protected $fillable = [
+    public $timestamps=true;
+    protected $fillable = [
     
         'description',
         'hour',
         'turn',
         'user_id',
-        'absenceDate',
+        'absence_date',
 
     ];
-    public function department():BelongsTo{
+
+   
+    public function user():BelongsTo{
 
         return $this->belongsTo(User::class);
     }

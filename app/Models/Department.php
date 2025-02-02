@@ -10,13 +10,9 @@ class Department extends Model
     protected $fillable = [
     
         'dep_name',
-
-
-    
-
     ];
 
-    public function user(): HasMany
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }

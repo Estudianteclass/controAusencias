@@ -18,8 +18,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'administrador',
-            'lastName' => 'admin',
-            'phone' => '3333333',
+            'last_name' => 'admin',
             'department_id'=>'1',
             'email' => 'admin@example.com',
             'password' => Hash::make('admin123')
@@ -29,8 +28,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'Miguel',
-            'lastName' => 'Perez',
-            'phone' => '123456',
+            'last_name' => 'Perez',
             'department_id'=>'2',
             'email' => 'miguel@example.com',
             'password' => Hash::make('miguel123')
@@ -38,8 +36,7 @@ class UserSeeder extends Seeder
         ]);
         User::create([
             'name' => 'Juan',
-            'lastName' => 'Rodriguez',
-            'phone' => '456688',
+            'last_name' => 'Rodriguez',
             'department_id'=>'3',
             'email' => 'juan@example.com',
             'password' => Hash::make('juan123')

@@ -19,7 +19,7 @@ class AbsenceSeeder extends Seeder
             'description' => 'cita medica',
             'hour' => 'segunda',
             'turn' => 'tarde',
-            'absenceDate'=>Carbon::create('2025','03','04'),
+            'absence_date'=>Carbon::create('2025','03','04'),
             'user_id' => '2',
           
 
@@ -28,7 +28,7 @@ class AbsenceSeeder extends Seeder
             'description' => 'renovacion dni',
             'hour' => 'primera',
             'turn' => 'mañana',
-          'absenceDate'=>Carbon::create('2025','08','11'),
+          'absence_date'=>Carbon::create('2025','08','11'),
             'user_id' => '3',
            
 
@@ -37,7 +37,7 @@ class AbsenceSeeder extends Seeder
             'description' => 'gestiones',
             'hour' => 'tercera',
             'turn' => 'tarde',
-           'absenceDate'=>Carbon::create('2025','10','27'),
+           'absence_date'=>Carbon::create('2025','10','27'),
             'user_id' => '2',
            
 
@@ -46,7 +46,7 @@ class AbsenceSeeder extends Seeder
             'description' => 'convocatoria',
             'hour' => 'cuarta',
             'turn' => 'mañana',
-            'absenceDate'=>Carbon::create('2025','05','07'),
+            'absence_date'=>Carbon::create('2025','05','07'),
             'user_id' => '3',
            
 

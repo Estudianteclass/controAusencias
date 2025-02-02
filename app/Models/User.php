@@ -21,11 +21,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'lastName',
-        'phone',
-        'department',
+        'last_name',
+        'department_id',
         'email',
-        'password',
+        //'password',
     ];
 public $timestamps=true;
     /**
@@ -55,7 +54,7 @@ public $timestamps=true;
 
         return $this->belongsTo(Department::class);
     }
-    public function absence(): HasMany
+    public function absences(): HasMany
     {
         return $this->hasMany(Absence::class);
     }
