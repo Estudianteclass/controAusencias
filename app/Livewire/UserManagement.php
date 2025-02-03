@@ -4,7 +4,9 @@ namespace App\Livewire;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
 class UserManagement extends Component
 {
@@ -20,6 +22,7 @@ class UserManagement extends Component
     public $editModal = false;
     public $userEdit = false;
     public $departments = [];
+    public $role;
 
      public function mount(){
         $this->getDepartments();
@@ -50,6 +53,10 @@ class UserManagement extends Component
         $user->email = $this->email;
         $user->department_id = $this->department_id;
         $user->save();
+        $role=Role::where('name',$this->role)->first();
+        if($role){
+            $user->assignRole($role);
+        }
         $this->clearFields();
         $this->getUsersDeps();
         $this->closeCreateModal();
@@ -60,6 +67,7 @@ class UserManagement extends Component
         $this->last_name = '';
         $this->email = '';
         $this->department_id = '';
+        $this->role='';
     }
     public function openCreateModal()
     {
@@ -118,4 +126,6 @@ class UserManagement extends Component
             $this->getUsersDeps();
         }
     }
+
+
 }

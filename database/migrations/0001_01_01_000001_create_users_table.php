@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('email')->unique();
               $table->unsignedBigInteger('department_id');
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
           
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->rememberToken();

@@ -1,4 +1,7 @@
+
+ 
 <div>
+
   <button class="bg-green-500 px-2 py-2 text-white font-bold rounded-md" wire:click="openCreateModal">Crear usuario</button>
     <div class="flex flex-col">
         <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
@@ -40,7 +43,17 @@
                 {{$user->email}}
                   </td>
                     <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                      rol usuario
+                      @if ($user->getRoleNames()->isNotEmpty())
+                      @if ($user->getRoleNames()->first()=='admin')
+                        Administrador
+                        @else
+                        Profesor
+                      @endif
+                        
+                         @else
+                         No tiene rol
+                      @endif
+                    
                     </td>
                     <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                     <button wire:click="openEditModal({{$user->id}})" class="bg-yellow-500 px-2 py-2 rounded-md text-white font-bold">Editar</button>
@@ -69,20 +82,29 @@
               <form>
                 <div class="grid gap-y-4">
                   <div>
-                     <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="nombre">Nombre</label>
-                     <input type="text" name="nombre" id="nombre" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm" wire:model="name">
+                     <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="name">Nombre</label>
+                     <input  wire:model="name" type="text" name="name" id="name" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm">
                   </div>
                   <div>
-                    <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="apellidos">Apellidos</label>
-                    <input type="text" name="apellidos" id="apellidos" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm" wire:model="last_name">
+                    <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="last_name">Apellidos</label>
+                    <input wire:model="last_name" type="text" name="last_name" id="last_name" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm">
                  </div>
                  <div>
-                  <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="apellidos">Email</label>
-                  <input type="email" name="email" id="email" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm" wire:model="email">
+                  <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="email">Email</label>
+                  <input wire:model="email" type="email" name="email" id="email" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm">
+               </div>
+               <div>
+                <div class="flex flex-col justify-center">
+                  <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="role">Rol de usuario</label>
+                  <select  wire:model="role" name="role" id="role">
+                    <option value="admin">Administrador</option>
+                    <option value="teacher">Profesor</option>
+                  </select>
+               </div>
                </div>
                  <div class="flex flex-col justify-center">
-                  <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="descripcion">Departamento</label>
-                  <select name="departamento" id="departamento" wire:model="department_id">
+                  <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="department_id">Departamento</label>
+                  <select wire:model="department_id" name="department_id" id="department_id" >
                       @foreach ($departments as $department)
                         <option value="{{$department->id}}">{{$department->dep_name}}</option>
                      @endforeach
@@ -123,20 +145,20 @@
               <form>
                 <div class="grid gap-y-4">
                   <div>
-                     <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="nombre">Nombre</label>
-                     <input type="text" name="nombre" id="nombre" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm" wire:model="name">
+                     <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="name">Nombre</label>
+                     <input wire:model="name" type="text" name="name" id="name" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm">
                   </div>
                   <div>
-                    <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="apellidos">Apellidos</label>
-                    <input type="text" name="apellidos" id="apellidos" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm" wire:model="last_name">
+                    <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="last_name">Apellidos</label>
+                    <input  wire:model="last_name" type="text" name="last_name" id="last_name" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm">
                  </div>
                  <div>
-                  <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="apellidos">Email</label>
-                  <input type="email" name="email" id="email" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm" wire:model="email">
+                  <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="email">Email</label>
+                  <input wire:model="email" type="email" name="email" id="email" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm">
                </div>
                  <div class="flex flex-col justify-center">
-                  <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="descripcion">Departamento</label>
-                  <select name="departamento" id="departamento" wire:model="department_id">
+                  <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="department_id">Departamento</label>
+                  <select  wire:model="department_id" name="department_id" id="department_id">
                       @foreach ($departments as $department)
                         <option value="{{$department->id}}">{{$department->dep_name}}</option>
                      @endforeach
@@ -150,7 +172,7 @@
                   <div class="flex flex-row justify-center space-x-2 mt-2">
                   <button wire:click="updateUser" class="py-3 px-4  gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Confirmar cambios</button>
                   <button wire:click="closeEditModal" class="py-3 px-4  gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Cancelar</button>
-      
+     
                   </div>
                  
                 
@@ -163,4 +185,5 @@
        
       </main>
       @endif
+   
 </div><!--fin del componente-->

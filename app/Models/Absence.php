@@ -11,9 +11,9 @@ class Absence extends Model
     protected $fillable = [
     
         'description',
-        'hour',
-        'turn',
         'user_id',
+        'hour',
+        'turn',     
         'absence_date',
 
     ];

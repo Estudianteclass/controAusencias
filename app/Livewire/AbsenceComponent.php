@@ -12,8 +12,8 @@ use Livewire\Component;
 
 class AbsenceComponent extends Component
 {
-    public $mostrar = true;
-    public $verDepartamentos=true;
+  
+    public $verDepartamentos = true;
     public $absences = [];
     public $user;
     public $absence;
@@ -22,6 +22,7 @@ class AbsenceComponent extends Component
     public $department;
     public $hour;
     public $turn;
+    public $usersDep = [];
     public $user_id;
     public $absenceForm = false;
     public $absence_id;
@@ -33,39 +34,34 @@ class AbsenceComponent extends Component
     public $turns = [];
     public $date;
     public $editAbsence = false;
+
     public function mount()
     {
-
+        $this->getAbsencesDepsTeachers();
         $this->departments = $this->getDepartments();
+        $this->filterByDepartment();
     }
     public function render()
     {
 
 
-        $this->getAbsencesDepsTeachers();
+
         return view('livewire.absence-component');
     }
 
     ////funciones de prueba
-    public function openMostrar()
-    {
-        $this->mostrar = true;
-    }
-    public function closeMostrar()
-    {
-        $this->mostrar = false;
-    }
 
 
+    public function filterByDepartment()
+    {
+        $this->usersDep = User::with('department')->get();
+    }
 
     public function openDepartments()
     {
         $this->verDepartamentos = true;
     }
-    public function closeDepartments()
-    {
-        $this->mostrar = false;
-    }
+ 
 
 
 
@@ -81,14 +77,11 @@ class AbsenceComponent extends Component
 
     public function createAbsence()
     {
-        $name = $this->name;
-        $user = User::where('name', '=', $name)->first();
-
-
-        if ($user) {
+       
+  
             $absence = new Absence();
             $absence->description = $this->description;
-            $absence->user_id = $user->id;
+            $absence->user_id = $this->user_id;
             $absence->hour = $this->hour;
             $absence->turn = $this->turn;
             $absence->absence_date = $this->absence_date;
@@ -96,7 +89,7 @@ class AbsenceComponent extends Component
             $this->clearFields();
             $this->getAbsencesDepsTeachers();
             $this->closeAbsenceForm();
-        }
+        
     }
     public function getDepartments()
     {
@@ -109,6 +102,7 @@ class AbsenceComponent extends Component
         $this->hour = '';
         $this->turn = '';
         $this->name = '';
+        $this->user_id = '';
         $this->description = '';
     }
 
@@ -117,9 +111,7 @@ class AbsenceComponent extends Component
     {
 
         $absence = Absence::find($id);
-        if ($absence) {
-            $user = User::with('absences')->where('id', '=', $absence->user_id)->first();
-            $this->name = $user->name;
+        if ($absence) {      
             $this->absence_id = $absence->id;
             $this->description = $absence->description;
             $this->hour = $absence->hour;
@@ -139,7 +131,7 @@ class AbsenceComponent extends Component
             'description' => $this->description,
             'hour' => $this->hour,
             'turn' => $this->turn,
-            'absence_date' => $this->absence_date,
+            'absence_date' => Carbon::createFromFormat('d-m-Y', $this->absence_date)->format('Y-m-d'),
             'user_id' => $this->user_id,
         ]);
         $this->editAbsence = false;
@@ -155,7 +147,7 @@ class AbsenceComponent extends Component
 
     public function openAbsenceForm()
     {
-
+        $this->filterByDepartment();
         $this->absenceForm = true;
     }
     public function closeAbsenceForm()
