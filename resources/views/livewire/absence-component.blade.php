@@ -6,10 +6,29 @@
 
   
 
-<button class="bg-green-500 px-2 py-2 text-white font-bold rounded-md" wire:click="openAbsenceForm">Añadir ausencia</button>
+
+<div class="grid grid-rows-1 grid-cols-2 w-full items-center">
+  <div class=" justify-self-start">
+    <button class="bg-green-500 px-2 py-2 text-white font-bold rounded-md" wire:click="openAbsenceForm">Añadir ausencia</button> 
+    <label for="selectedDate">Mostrar ausencias:</label>
+    <select wire:change.prevent:="filterByDate" wire:model="selectedDate" name="selectedDate" id="selectedDate">
+      <option value="hoy">Ausencias de hoy</option>
+      <option value="todas">Todas</option>
+      <option value="mias">Mis ausencias</option>
+    </select>
+  </div>
+ 
+  <form class="justify-self-end">
+  <label for="filterDate">Fliltrar por fecha</label>
+  <input wire:model="selectedDate" type="date" name="selectedDate" id="selectedDate">
+  <button wire:click.prevent="filterByDate" class="bg-green-500 px-2 py-2 text-white font-bold rounded-md">Filtrar</button>
+</form>
+</div>
+
   <div class="flex flex-col">
    <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
      <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+      <h1 class="text-center text-xl font-bold">Listado de ausencias</h1>
        <div class="overflow-hidden">
          <table class="min-w-full">
            <thead class="bg-white border-b">
@@ -41,7 +60,7 @@
             @foreach ( $absences as $absence )
              <tr class="bg-gray-100 border-b hover:bg-gray-300">
                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {{$absence->name}}
+                  {{$absence->name}}  {{$absence->last_name}}
                </td>
                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   {{$absence->dep_name}}
@@ -59,9 +78,18 @@
                   {{$absence->turn}}
                </td>
                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                @role('admin')
                <button wire:click="openEditAbsenceForm({{$absence->absence_id}})" class="bg-yellow-500 px-2 py-2 rounded-md text-white font-bold">Editar</button>
                <button class="bg-red-500 px-2 py-2 rounded-md text-white font-bold" wire:click="deleteAbsence({{ $absence->absence_id }})" wire:confirm="¿Desea borrar esta ausencia?">Borrar</button>
-             </td>
+             @endrole
+             @role('teacher')
+             @if ($absence->user_id===auth()->id())
+              <button wire:click="openEditAbsenceForm({{$absence->absence_id}})" class="bg-yellow-500 px-2 py-2 rounded-md text-white font-bold">Editar</button>
+             <button class="bg-red-500 px-2 py-2 rounded-md text-white font-bold" wire:click="deleteAbsence({{ $absence->absence_id }})" wire:confirm="¿Desea borrar esta ausencia?">Borrar</button>
+             @endif
+            
+           @endrole
+              </td>
              </tr>
              @endforeach
            </tbody>
@@ -84,29 +112,31 @@
       <div class="mt-5">
         <form>
           <div class="grid gap-y-4">
+              @role('admin')
             <div>
+            
                <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="user_id ">Profesor</label>
                   <select wire:model="user_id" name="user_id" id="user_id">
-
+                    <option value="">--Seleccionar profesor--</option>
                      @foreach ($usersDep as $user)
 
                     <option value="{{$user->id}}">{{$user->name}} {{$user->last_name}}, {{$user->department->dep_name}}</option>
                     @endforeach
                   </select>
               </div>
-         
+         @endrole
            <div>
             <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="turn">Turno</label>
             <select wire:model="turn" name="turn" id="turn" >
-
+              <option value="">--Seleccionar turno--</option>
               <option value="mañana">Mañana</option>
               <option value="tarde">Tarde</option>
             </select>
          </div>
          <div>
            <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="hour">Hora</label>
-         <select wire:model="hour" name="hour" id="hour" >
-
+         <select wire:model="hour" name="hour" id="hour">
+          <option value="">--Seleccionar hora--</option>
         <option value="primera">primera</option>
         <option value="segunda">segunda</option>
         <option value="tercera">tercera</option>
@@ -127,7 +157,12 @@
          </div>
           
             <div class="flex flex-row justify-center space-x-2 mt-2">
+              @role('admin')
             <button wire:click.prevent="createAbsence" class="py-3 px-4  gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Añadir ausencia</button>
+           @endrole
+           @role('teacher')
+           <button wire:click.prevent="createMyAbsence" class="py-3 px-4  gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Crear ausencia</button>
+          @endrole
             <button wire:click="closeAbsenceForm" class="py-3 px-4  gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Cancelar</button>
 
             </div>

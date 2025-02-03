@@ -97,6 +97,7 @@
                 <div class="flex flex-col justify-center">
                   <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="role">Rol de usuario</label>
                   <select  wire:model="role" name="role" id="role">
+                    <option value="">--Elegir Rol--</option>
                     <option value="admin">Administrador</option>
                     <option value="teacher">Profesor</option>
                   </select>
@@ -105,6 +106,7 @@
                  <div class="flex flex-col justify-center">
                   <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="department_id">Departamento</label>
                   <select wire:model="department_id" name="department_id" id="department_id" >
+                    <option value="">--Elegir departamento--</option>
                       @foreach ($departments as $department)
                         <option value="{{$department->id}}">{{$department->dep_name}}</option>
                      @endforeach
@@ -160,6 +162,7 @@
                   <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="department_id">Departamento</label>
                   <select  wire:model="department_id" name="department_id" id="department_id">
                       @foreach ($departments as $department)
+                      <option value="">--Elegir departamento</option>
                         <option value="{{$department->id}}">{{$department->dep_name}}</option>
                      @endforeach
                   </select>

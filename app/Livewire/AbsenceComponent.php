@@ -5,14 +5,13 @@ namespace App\Livewire;
 use App\Models\Absence;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class AbsenceComponent extends Component
 {
-  
+
     public $verDepartamentos = true;
     public $absences = [];
     public $user;
@@ -34,10 +33,11 @@ class AbsenceComponent extends Component
     public $turns = [];
     public $date;
     public $editAbsence = false;
+    public $selectedDate;
 
     public function mount()
     {
-        $this->getAbsencesDepsTeachers();
+        $this->showToday();
         $this->departments = $this->getDepartments();
         $this->filterByDepartment();
     }
@@ -49,6 +49,15 @@ class AbsenceComponent extends Component
         return view('livewire.absence-component');
     }
 
+    //uso de eloquent da problemas
+public function showToday(){
+    $this->absences = DB::table('absences')
+    ->join('users', 'absences.user_id', '=', 'users.id')
+    ->join('departments', 'departments.id', '=', 'users.department_id')
+    ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
+    ->whereDate('absences.absence_date', '=', date('y-m-d'))
+    ->get();
+}
     ////funciones de prueba
 
 
@@ -61,10 +70,45 @@ class AbsenceComponent extends Component
     {
         $this->verDepartamentos = true;
     }
- 
 
 
+    public function filterByDate()
+    {
 
+        if ($this->selectedDate == 'todas') {
+            $this->getAbsencesDepsTeachers();
+        } else if ($this->selectedDate == 'hoy') {
+            $this->absences = DB::table('absences')
+                ->join('users', 'absences.user_id', '=', 'users.id')
+                ->join('departments', 'departments.id', '=', 'users.department_id')
+                ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
+                ->whereDate('absences.absence_date', '=', date('y-m-d'))
+                ->get();
+        } else if ($this->selectedDate == 'mias') {
+            $this->absences = DB::table('absences')
+            ->join('users', 'absences.user_id', '=', 'users.id')
+            ->join('departments', 'departments.id', '=', 'users.department_id')
+            ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
+            ->where('user_id', '=', auth()->id())
+            ->get();
+        } else {
+            $this->absences = DB::table('absences')
+                ->join('users', 'absences.user_id', '=', 'users.id')
+                ->join('departments', 'departments.id', '=', 'users.department_id')
+                ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
+                ->whereDate('absences.absence_date', '=', $this->selectedDate)
+                ->get();
+        }
+    }
+
+    public function showAllAbsences()
+    {
+        $this->absences = DB::table('absences')
+            ->join('users', 'absences.user_id', '=', 'users.id')
+            ->join('departments', 'departments.id', '=', 'users.department_id')
+            ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
+            ->get();
+    }
     public function getAbsencesDepsTeachers()
     {
 
@@ -77,19 +121,18 @@ class AbsenceComponent extends Component
 
     public function createAbsence()
     {
-       
-  
-            $absence = new Absence();
-            $absence->description = $this->description;
-            $absence->user_id = $this->user_id;
-            $absence->hour = $this->hour;
-            $absence->turn = $this->turn;
-            $absence->absence_date = $this->absence_date;
-            $absence->save();
-            $this->clearFields();
-            $this->getAbsencesDepsTeachers();
-            $this->closeAbsenceForm();
-        
+
+
+        $absence = new Absence();
+        $absence->description = $this->description;
+        $absence->user_id = $this->user_id;
+        $absence->hour = $this->hour;
+        $absence->turn = $this->turn;
+        $absence->absence_date = $this->absence_date;
+        $absence->save();
+        $this->clearFields();
+        $this->getAbsencesDepsTeachers();
+        $this->closeAbsenceForm();
     }
     public function getDepartments()
     {
@@ -111,7 +154,7 @@ class AbsenceComponent extends Component
     {
 
         $absence = Absence::find($id);
-        if ($absence) {      
+        if ($absence) {
             $this->absence_id = $absence->id;
             $this->description = $absence->description;
             $this->hour = $absence->hour;
@@ -181,4 +224,52 @@ class AbsenceComponent extends Component
     {
         $this->absences = DB::table('absences')->get();
     }
+//functiones solo para usuario profesor, solo puede crear faltas para si mismo
+
+public function createMyAbsence()
+{
+
+
+    $absence = new Absence();
+    $absence->description = $this->description;
+    $absence->user_id = auth()->id();
+    $absence->hour = $this->hour;
+    $absence->turn = $this->turn;
+    $absence->absence_date = $this->absence_date;
+    $absence->save();
+    $this->clearFields();
+    $this->getAbsencesDepsTeachers();
+    $this->closeAbsenceForm();
 }
+public function updateMyAbsence(){
+    $absence = Absence::find($this->absence_id);
+
+        $absence->update([
+            'description' => $this->description,
+            'hour' => $this->hour,
+            'turn' => $this->turn,
+            'absence_date' => Carbon::createFromFormat('d-m-Y', $this->absence_date)->format('Y-m-d'),
+            'user_id' =>auth()->id(),
+        ]);
+        $this->editAbsence = false;
+        $this->getMyAbscences();
+        $this->closeEditAbsenceForm();
+        $this->clearFields();
+}
+
+public function getMyAbscences(){
+
+    $this->absences = DB::table('absences')
+    ->join('users', 'absences.user_id', '=', 'users.id')
+    ->join('departments', 'departments.id', '=', 'users.department_id')
+    ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
+    ->where('user_id', '=', auth()->id())
+    ->get();
+}
+}
+
+
+
+
+
+
