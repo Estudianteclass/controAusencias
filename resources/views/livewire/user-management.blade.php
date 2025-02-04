@@ -3,7 +3,7 @@
 <div>
 <div class="flex justify-around">
  <button class="bg-green-500 px-2 py-2 text-white font-bold rounded-md" wire:click="openCreateModal">Crear usuario</button>
-  @livewire("SubirArchivo")
+  @livewire("SubirArchivo",['users'=>$users])
 </div>
  
     <div class="flex flex-col">

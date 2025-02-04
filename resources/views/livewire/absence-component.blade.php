@@ -83,11 +83,18 @@
                <button class="bg-red-500 px-2 py-2 rounded-md text-white font-bold" wire:click="deleteAbsence({{ $absence->absence_id }})" wire:confirm="¿Desea borrar esta ausencia?">Borrar</button>
              @endrole
              @role('teacher')
-             @if ($absence->user_id===auth()->id())
+             @if ($absence->user_id===auth()->id()&&\Carbon\Carbon::parse($absence->created_at)->diffInMinutes(now())<10)
               <button wire:click="openEditAbsenceForm({{$absence->absence_id}})" class="bg-yellow-500 px-2 py-2 rounded-md text-white font-bold">Editar</button>
              <button class="bg-red-500 px-2 py-2 rounded-md text-white font-bold" wire:click="deleteAbsence({{ $absence->absence_id }})" wire:confirm="¿Desea borrar esta ausencia?">Borrar</button>
+             @else
+             Acciones no disponibles
              @endif
-            
+            <!--
+            calcular diferencia en minutos
+
+            https://laracasts.com/discuss/channels/laravel/calculate-difference-in-minutes-between-created-at-and-current-time-in-laravel
+            https://laracasts.com/discuss/channels/laravel/getting-the-hour-of-a-created-at-time-stamp-in-laravel
+            -->
            @endrole
               </td>
              </tr>

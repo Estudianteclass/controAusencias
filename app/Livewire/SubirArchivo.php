@@ -11,6 +11,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
+use Spatie\Permission\Models\Role;
+
 //fuente usada para subida archivo
 
 //https://blog.devgenius.io/laravel-upload-csv-file-read-its-contents-and-insert-them-into-laravel-database-table-d721753a2f86
@@ -18,6 +20,8 @@ class SubirArchivo extends Component
 {
     use WithFileUploads;
     public $csv_File;
+    public $subidos = 0;
+    public $users = [];
 
     public function render()
     {
@@ -26,6 +30,7 @@ class SubirArchivo extends Component
 
     public  function importFromCsv()
     {
+
         $this->validate([
 
             'csv_File' => 'required|file|mimes:csv,txt'
@@ -36,7 +41,7 @@ class SubirArchivo extends Component
 
         array_shift($rows);
 
-
+        $role = Role::where('name', 'teacher')->first();
         foreach ($rows as $row) {
             $data = str_getcsv($row);
 
@@ -47,12 +52,12 @@ class SubirArchivo extends Component
             if (User::where('email', $email)->exists()) {
                 continue;
             }
-            $department=$data[3];
+            $department = intval(trim($data[3]));
 
             if (!Department::where('id', $department)->exists()) {
-               continue;
+                continue;
             }
-            User::create([
+            $user =    User::create([
 
                 'name' => $data[0],
                 'last_name' => $data[1],
@@ -60,6 +65,18 @@ class SubirArchivo extends Component
                 'department_id' => intval($data[3]),
                 'password' => Hash::make($data[4]),
             ]);
+            if ($role) {
+                $user->assignRole($role);
+            }
+
+            $this->subidos++;
         }
+        $this->getUsersDeps();
+    }
+
+
+    public function getUsersDeps()
+    {
+        $this->users = User::where('id', '!=', auth()->id())->with('department')->get();
     }
 }
