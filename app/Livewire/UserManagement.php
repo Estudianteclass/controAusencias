@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
-
 class UserManagement extends Component
 {
     public $name;
@@ -126,6 +125,7 @@ class UserManagement extends Component
             $this->getUsersDeps();
         }
     }
+
 
 
 }

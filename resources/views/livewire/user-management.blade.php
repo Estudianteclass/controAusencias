@@ -1,8 +1,11 @@
 
  
 <div>
-
-  <button class="bg-green-500 px-2 py-2 text-white font-bold rounded-md" wire:click="openCreateModal">Crear usuario</button>
+<div class="flex justify-around">
+ <button class="bg-green-500 px-2 py-2 text-white font-bold rounded-md" wire:click="openCreateModal">Crear usuario</button>
+  @livewire("SubirArchivo")
+</div>
+ 
     <div class="flex flex-col">
         <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
           <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
