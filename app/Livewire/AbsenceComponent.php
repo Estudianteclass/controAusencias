@@ -2,11 +2,15 @@
 
 namespace App\Livewire;
 
+use App\Mail\FaltaCreada;
+use App\Mail\FaltaEditada;
 use App\Models\Absence;
+use App\Models\Department;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class AbsenceComponent extends Component
@@ -50,14 +54,15 @@ class AbsenceComponent extends Component
     }
 
     //uso de eloquent da problemas
-public function showToday(){
-    $this->absences = DB::table('absences')
-    ->join('users', 'absences.user_id', '=', 'users.id')
-    ->join('departments', 'departments.id', '=', 'users.department_id')
-    ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
-    ->whereDate('absences.absence_date', '=', date('y-m-d'))
-    ->get();
-}
+    public function showToday()
+    {
+        $this->absences = DB::table('absences')
+            ->join('users', 'absences.user_id', '=', 'users.id')
+            ->join('departments', 'departments.id', '=', 'users.department_id')
+            ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
+            ->whereDate('absences.absence_date', '=', date('y-m-d'))
+            ->get();
+    }
     ////funciones de prueba
 
 
@@ -86,11 +91,11 @@ public function showToday(){
                 ->get();
         } else if ($this->selectedDate == 'mias') {
             $this->absences = DB::table('absences')
-            ->join('users', 'absences.user_id', '=', 'users.id')
-            ->join('departments', 'departments.id', '=', 'users.department_id')
-            ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
-            ->where('user_id', '=', auth()->id())
-            ->get();
+                ->join('users', 'absences.user_id', '=', 'users.id')
+                ->join('departments', 'departments.id', '=', 'users.department_id')
+                ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
+                ->where('user_id', '=', auth()->id())
+                ->get();
         } else {
             $this->absences = DB::table('absences')
                 ->join('users', 'absences.user_id', '=', 'users.id')
@@ -129,7 +134,18 @@ public function showToday(){
         $absence->hour = $this->hour;
         $absence->turn = $this->turn;
         $absence->absence_date = $this->absence_date;
+        $user = User::find($this->user_id);
+        $admin = User::role('admin')->first();
+        $department=Department::find($user->department_id);
         $absence->save();
+
+        if ($user->hasRole('admin')) {
+
+            Mail::to($user->email)->queue(new FaltaCreada($absence, $department,$user));
+        } else {
+            Mail::to($admin->email)->queue(new FaltaCreada($absence, $department,$user));
+            Mail::to($user->email)->queue(new FaltaCreada($absence, $department,$user));
+        }
         $this->clearFields();
         $this->getAbsencesDepsTeachers();
         $this->closeAbsenceForm();
@@ -169,15 +185,25 @@ public function showToday(){
         //$user = auth()->id();
 
         $absence = Absence::find($this->absence_id);
-
+        //date('d-m-Y',strtotime($absence->absence_date)
         $absence->update([
             'description' => $this->description,
             'hour' => $this->hour,
             'turn' => $this->turn,
-            'absence_date' => Carbon::createFromFormat('d-m-Y', $this->absence_date)->format('Y-m-d'),
+            'absence_date' => date('Y-m-d', strtotime($this->absence_date)),
             'user_id' => $this->user_id,
         ]);
         $this->editAbsence = false;
+        $user = User::find($this->user_id);
+        $admin = User::role('admin')->first();
+        $department=Department::find($user->department_id);
+        if ($user->hasRole('admin')) {
+
+            Mail::to($user->email)->queue(new FaltaEditada($absence, $department,$user));
+        } else {
+            Mail::to($admin->email)->queue(new FaltaEditada($absence, $department,$user));
+            Mail::to($user->email)->queue(new FaltaEditada($absence, $department,$user));
+        }
         $this->getAbsencesDepsTeachers();
         $this->closeEditAbsenceForm();
         $this->clearFields();
@@ -224,52 +250,51 @@ public function showToday(){
     {
         $this->absences = DB::table('absences')->get();
     }
-//functiones solo para usuario profesor, solo puede crear faltas para si mismo
+    //functiones solo para usuario profesor, solo puede crear faltas para si mismo
 
-public function createMyAbsence()
-{
-
-
-    $absence = new Absence();
-    $absence->description = $this->description;
-    $absence->user_id = auth()->id();
-    $absence->hour = $this->hour;
-    $absence->turn = $this->turn;
-    $absence->absence_date = $this->absence_date;
-    $absence->save();
-    $this->clearFields();
-    $this->getAbsencesDepsTeachers();
-    $this->closeAbsenceForm();
-}
-public function updateMyAbsence(){
-    $absence = Absence::find($this->absence_id);
+    public function createMyAbsence()
+    {
+        $user = User::find(auth()->id());
+        $admin = User::role('admin')->first();
+        $department=Department::find($user->department_id);
+        $absence = new Absence();
+        $absence->description = $this->description;
+        $absence->user_id = auth()->id();
+        $absence->hour = $this->hour;
+        $absence->turn = $this->turn;
+        $absence->absence_date = $this->absence_date;
+        $absence->save();
+        Mail::to($admin->email)->send(new FaltaCreada($absence, $department,$user));
+        Mail::to($user->email)->send(new FaltaCreada($absence, $department,$user));
+        $this->clearFields();
+        $this->getAbsencesDepsTeachers();
+        $this->closeAbsenceForm();
+    }
+    public function updateMyAbsence()
+    {
+        $absence = Absence::find($this->absence_id);
 
         $absence->update([
             'description' => $this->description,
             'hour' => $this->hour,
             'turn' => $this->turn,
             'absence_date' => Carbon::createFromFormat('d-m-Y', $this->absence_date)->format('Y-m-d'),
-            'user_id' =>auth()->id(),
+            'user_id' => auth()->id(),
         ]);
         $this->editAbsence = false;
         $this->getMyAbscences();
         $this->closeEditAbsenceForm();
         $this->clearFields();
+    }
+
+    public function getMyAbscences()
+    {
+
+        $this->absences = DB::table('absences')
+            ->join('users', 'absences.user_id', '=', 'users.id')
+            ->join('departments', 'departments.id', '=', 'users.department_id')
+            ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
+            ->where('user_id', '=', auth()->id())
+            ->get();
+    }
 }
-
-public function getMyAbscences(){
-
-    $this->absences = DB::table('absences')
-    ->join('users', 'absences.user_id', '=', 'users.id')
-    ->join('departments', 'departments.id', '=', 'users.department_id')
-    ->select('absences.id as absence_id', 'users.id as user_id', 'departments.id as department_id', 'absences.*', 'users.*', 'departments.*')
-    ->where('user_id', '=', auth()->id())
-    ->get();
-}
-}
-
-
-
-
-
-

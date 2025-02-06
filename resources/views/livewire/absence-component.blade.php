@@ -69,7 +69,7 @@
                   {{$absence->description}}
                </td>
                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                {{\Carbon\Carbon::parse($absence->absence_date)->format('d-m-Y') }}
+                {{date('d-m-Y',strtotime($absence->absence_date)) }}
              </td>
                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   {{$absence->hour}}
@@ -83,7 +83,7 @@
                <button class="bg-red-500 px-2 py-2 rounded-md text-white font-bold" wire:click="deleteAbsence({{ $absence->absence_id }})" wire:confirm="¿Desea borrar esta ausencia?">Borrar</button>
              @endrole
              @role('teacher')
-             @if ($absence->user_id===auth()->id()&&\Carbon\Carbon::parse($absence->created_at)->diffInMinutes(now())<10)
+             @if ($absence->user_id===auth()->id())
               <button wire:click="openEditAbsenceForm({{$absence->absence_id}})" class="bg-yellow-500 px-2 py-2 rounded-md text-white font-bold">Editar</button>
              <button class="bg-red-500 px-2 py-2 rounded-md text-white font-bold" wire:click="deleteAbsence({{ $absence->absence_id }})" wire:confirm="¿Desea borrar esta ausencia?">Borrar</button>
              @else
@@ -162,13 +162,15 @@
             <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="description">Descripcion</label>
             <input  wire:model="description" type="text" name="description" id="description" class="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm">
          </div>
-          
+        <p class="text-red-400" wire:loading>
+          Añadiendo nueva ausencia
+        </p>
             <div class="flex flex-row justify-center space-x-2 mt-2">
               @role('admin')
-            <button wire:click.prevent="createAbsence" class="py-3 px-4  gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Añadir ausencia</button>
+            <button wire:click.prevent="createAbsence" wire:loading.attr="disabled" class="py-3 px-4  gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Añadir ausencia</button>
            @endrole
            @role('teacher')
-           <button wire:click.prevent="createMyAbsence" class="py-3 px-4  gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Crear ausencia</button>
+           <button wire:click.prevent="createMyAbsence" wire:loading.attr="disabled" class="py-3 px-4  gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Crear ausencia</button>
           @endrole
             <button wire:click="closeAbsenceForm" class="py-3 px-4  gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Cancelar</button>
 
@@ -197,16 +199,7 @@
       <div class="mt-5">
         <form>
           <div class="grid gap-y-4">
-            <div>
-              <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="user_id ">Profesor</label>
-                 <select wire:model="user_id" name="user_id" id="user_id">
-
-                    @foreach ($usersDep as $user)
-
-                   <option value="{{$user->id}}">{{$user->name}} {{$user->last_name}}, {{$user->department->dep_name}}</option>
-                   @endforeach
-                 </select>
-             </div>
+         
          
            <div>
             <label class="block text-sm font-bold ml-1 mb-2 dark:text-white" for="turn">Turno</label>

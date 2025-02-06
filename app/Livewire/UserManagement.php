@@ -2,9 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Mail\UsuarioCreado;
+use App\Mail\UsuarioEditado;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
 class UserManagement extends Component
@@ -56,6 +60,11 @@ class UserManagement extends Component
         if($role){
             $user->assignRole($role);
         }
+    
+        $admin = User::role('admin')->first();
+        $department=Department::find($user->department_id);
+        Mail::to($admin->email)->queue(new UsuarioCreado($user, $department));
+        Mail::to($user->email)->queue(new UsuarioCreado($user, $department));
         $this->clearFields();
         $this->getUsersDeps();
         $this->closeCreateModal();
@@ -92,6 +101,7 @@ class UserManagement extends Component
     }
     public function updateUser()
     {
+       
         $user = User::find($this->user_id);
         $user->update([
             'name' => $this->name,
@@ -100,6 +110,10 @@ class UserManagement extends Component
             'department_id' => $this->department_id,
 
         ]);
+        $admin = User::role('admin')->first();
+        $department=Department::find($user->department_id);
+        Mail::to($admin->email)->queue(new UsuarioEditado($user, $department));
+        Mail::to($user->email)->queue(new UsuarioCreado($user, $department));
         $this->userEdit = false;
         $this->getUsersDeps();
          $this->clearFields();
